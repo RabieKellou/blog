@@ -1,0 +1,14 @@
+.badge>a {
+    color: #fff;
+    font-size: 14px;
+    padding: 2px 4px;
+    text-decoration: none;
+}
+
+.badge:hover {
+    background-color: #404040;
+}
+
+.fm-inline {
+    display: inline;
+}
