@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUser;
+use App\Image;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->authorizeResource(User::class,'user')
+        $this->authorizeResource(User::class, 'user');
     }
     /**
      * Display a listing of the resource.
@@ -19,7 +22,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -51,7 +53,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return view('users.show', ['user' => $user]);
     }
 
     /**
@@ -62,7 +64,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
@@ -72,9 +74,24 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUser $request, User $user)
     {
-        $this->authorize()
+        // Upload avatar for current User
+        if ($request->hasFile('avatar')) {
+
+            $path = $request->file('avatar')->store('users');
+
+            if ($user->image) {
+                Storage::delete($user->image->path);
+                $user->image->path = $path;
+                $user->image->save();
+            } else {
+                $user->image()->save(Image::make(['path' => $path]));
+            }
+        }
+        $user->locale = $request->locale;
+        $user->save();
+        return redirect()->back()->withStatus('User updated');
     }
 
     /**

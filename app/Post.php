@@ -7,7 +7,6 @@ use App\Scopes\LatestScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
 
 class Post extends Model
 {
@@ -16,9 +15,10 @@ class Post extends Model
     protected $fillable = ['title', 'content', 'slug', 'active', 'user_id'];
 
     //relationships
+    //one to many polymorphic
     public function comments()
     {
-        return $this->hasMany('App\Comment')->dernier(); //using comment's Dernier local scope
+        return $this->morphMany('App\Comment', 'commentable')->dernier(); //using comment's Dernier local scope
     }
     public function user()
     {
@@ -26,11 +26,11 @@ class Post extends Model
     }
     public function image()
     {
-        return $this->hasOne(Image::class);
+        return $this->morphOne('App\Image', 'imageable');
     }
     public function tags()
     {
-        return $this->belongsToMany('App\Tag')->withTimestamps();
+        return $this->morphToMany('App\Tag', 'taggable')->withTimestamps();
     }
     //create a local post
     public function scopeMostCommented(Builder $query)
@@ -49,20 +49,5 @@ class Post extends Model
         parent::boot();
         //create a global scope
         static::addGlobalScope(new LatestScope);
-
-        //delete comments before deleting a post
-        static::deleting(function (Post $post) {
-            //dd('deleting');
-            $post->comments()->delete();
-        });
-        static::restoring(function (Post $post) {
-            //dd('deleting');
-            $post->comments()->restore();
-        });
-
-        static::updating(function (Post $post) {
-            //dd('deleting');
-            Cache::forget("post-show-{$post->id}");
-        });
     }
 }

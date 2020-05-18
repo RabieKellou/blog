@@ -49,7 +49,7 @@
                 </div>
                 @endif
 
-                <x-updated :date="$post->created_at" :name="$post->user->name"></x-updated>
+                <x-updated :date="$post->created_at" :name="$post->user->name" :user-id="$post->user->id"></x-updated>
                 <x-updated :date="$post->created_at" >Updated</x-updated>
 
                 @auth

@@ -6,11 +6,17 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
+    public const LOCALES = [
+        'en' => 'English',
+        'ar' => 'Arabe',
+        'fr' => 'French'
+    ];
     /**
      * The attributes that are mass assignable.
      *
@@ -42,10 +48,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
-
+    //one to many polymorphic relationship
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->morphMany('App\Comment', 'commentable')->dernier(); //using comment's Dernier local scope
+    }
+    //one to one polymorphic relationship
+    public function image()
+    {
+        return $this->morphOne('App\Image', 'imageable');
     }
 
     public function scopeActiveUsers(Builder $query)

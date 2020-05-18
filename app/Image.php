@@ -9,9 +9,9 @@ class Image extends Model
 {
     protected $fillable = ['path'];
 
-    public function post()
+    public function imageable()
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphTo();
     }
 
     public function url()

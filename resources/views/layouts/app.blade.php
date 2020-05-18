@@ -34,11 +34,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">Posts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">{{ __('Contact') }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('posts.index') }}">{{ __('Posts') }}</a></li>
 
-                        <li class="nav-item"><a class="nav-link" href="{{ route('posts.create') }}">New Post</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('posts.create') }}">{{ __('Add') }}</a></li>
                     </ul>
 
 
@@ -58,11 +58,14 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
+
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a href="{{ route('users.show',['user'=>Auth::user()->id]) }}" class="dropdown-item">{{ __('Profile') }}</a>
+                                    <a href="{{ route('users.edit',['user'=>Auth::user()->id]) }}" class="dropdown-item">{{ __('Edit') }}</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
